@@ -34,9 +34,23 @@ class wsUrls:
             self.Logger.log("Validating URL:  [" + url + "]")
         extracted_domain = tldextract.extract(url)
         return bool(extracted_domain.domain and extracted_domain.suffix)
-    
+
     def get_base_url(self, url):
         """
+        Gets the base URL of a given URL (Please don't use this if you are using multi-threading as tldextract is not thread safe and will cause you many headaches... trust me. Rather use get_base_url_cache_safe()).
+
+        Parameters:
+        - `url` (str): The URL to get the base URL from.
+
+        Returns:
+        - `str`: The base URL.
+        """
+        extracted_domain = tldextract.extract(url)
+        return extracted_domain.registered_domain
+    
+    def get_base_url_cache_safe(self, url):
+        """
+        NOTE: Please only use this when you are using multi-threading (tldextract is not thread safe) otherwise use the tldextract method (get_base_url) as it is much more robust
         Gets the base URL of a given URL, we assume the URL is of the form (http(s)://)website.com.
 
         Parameters:
@@ -113,17 +127,25 @@ class wsUrls:
         Parameters:
         - `encrypted_mail` (str): The encrypted mail to be decrypted (the actual string, no HTML tags)
 
-        Returns:
+        Returns: 
         - `str`: The decrypted mail.
         """
         r = int(encrypted_mail[:2],16)
         email = ''.join([chr(int(encrypted_mail[i:i+2], 16) ^ r) for i in range(2, len(encrypted_mail), 2)])
         return email
 
-if __name__ == "__main__":
-    urls = wsUrls()
-    example_urls = ["https://www.google.com", "http://www.google.com", "https://example.com/page#section", "www.google.com", "google.com", "http://www.aosidwer.google.com", "https://google.com", "http://google.com/"]
-    for url in example_urls:
-        print(urls.get_base_url(url)) # google.com
+def base_url_test():
+    with open("C:/Users/luker/OneDrive/Documents/Upwork work/wsctools/test files/baseline.csv", "r") as file:
+        urls = wsUrls()
+        for line in file:
+            url = line.strip()
+            tld_base_url = tldextract.extract(url).registered_domain
+            my_base_url = urls.get_base_url(url)
+            if (tld_base_url != my_base_url):
+                print("Error: TLD base URL [" + tld_base_url + "] does not match my base URL [" + my_base_url + "] for URL [" + url + "]")
+        
 
+if __name__ == "__main__":
+    base_url_test()
+    
         
