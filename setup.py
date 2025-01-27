@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='wsctools',
-    version='0.1.2',
+    version='1.0.0',
     packages=['wsctools'],
      install_requires=[
         'googletrans==4.0.0-rc1',

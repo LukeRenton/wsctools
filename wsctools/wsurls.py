@@ -1,5 +1,4 @@
 from os import name
-from httpx import get
 import tldextract
 from urllib.parse import urlparse
 from wsctools.wslogging import wsLogger
@@ -45,6 +44,7 @@ class wsUrls:
         Returns:
         - `str`: The base URL.
         """
+        
         extracted_domain = tldextract.extract(url)
         return extracted_domain.registered_domain
     
@@ -90,49 +90,6 @@ class wsUrls:
 
         parsed_url = urlparse(url)
         return not parsed_url.scheme and not parsed_url.netloc
-    
-    def is_contact_url(self, a_tag, base_url, word_for_contact):
-        """
-        Checks if a given <a> tag represents a contact URL.
-
-        Parameters:
-        - `a_tag`: The <a> tag to be checked.
-        - `base_url` (str): The base URL.
-        - `word_for_contact` (str): The word or phrase indicating a contact URL.
-
-        Returns:
-        - `str` or `None`: The contact URL if found, `None` otherwise.
-        """
-
-        url = a_tag['href']
-        text = a_tag.text.lower()
-        isRelative_URL= self.is_relative_url(url)
-
-        #Check if the found URL is on the same domain as the base URL
-        if (isRelative_URL == False and (base_url in url) == False):
-            return None
-        
-        #Check if the found URL contains the word for contact
-        if (word_for_contact in url or word_for_contact in text):
-            if (isRelative_URL):
-                return self.standardize_url(base_url + url if url.startswith("/") else base_url + "/" + url)
-            else:
-                return self.standardize_url(url)
-        return None
-    
-    def cloudflare_decrypt_mail(self, encrypted_mail):
-        """
-        Decrypts a given Cloudflare encrypted mail.
-
-        Parameters:
-        - `encrypted_mail` (str): The encrypted mail to be decrypted (the actual string, no HTML tags)
-
-        Returns: 
-        - `str`: The decrypted mail.
-        """
-        r = int(encrypted_mail[:2],16)
-        email = ''.join([chr(int(encrypted_mail[i:i+2], 16) ^ r) for i in range(2, len(encrypted_mail), 2)])
-        return email
 
 def base_url_test():
     with open("C:/Users/luker/OneDrive/Documents/Upwork work/wsctools/test files/baseline.csv", "r") as file:
@@ -146,6 +103,7 @@ def base_url_test():
         
 
 if __name__ == "__main__":
-    base_url_test()
+    ws_url = wsUrls()
+    print(ws_url.get_base_url("https://www.ac.za.google.com?/w4920/---212304j21icwa'"))
     
         
