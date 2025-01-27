@@ -13,7 +13,7 @@ WSCTools is a collection of helper functions designed to facilitate efficient we
 To get started with WSCTools, you can install it via pip:
 
 ```bash
-pip install wsctools==1.0.0
+pip install wsctools==1.0.1
 ```
 
 ## Core Features
