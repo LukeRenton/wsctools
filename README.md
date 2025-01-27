@@ -16,6 +16,8 @@ To get started with WSCTools, you can install it via pip:
 pip install wsctools==1.0.1
 ```
 
+You can also check out the packages PyPI page: https://pypi.org/project/wsctools/1.0.1/
+
 ## Core Features
 
 ### 1. WSHeaders
